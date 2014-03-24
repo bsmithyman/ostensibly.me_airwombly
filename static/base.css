@@ -101,7 +101,7 @@ html, body {
 
 #main {
 	width: 942px;
-	margin: 0.5em auto;
+	margin: 0 auto;
 	line-height: 1.7em;
         padding: 10px 18px 10px; 18px;
 	background-color: #ffffff;
@@ -132,6 +132,7 @@ html, body {
 
 #content {
 	width: 944px;
+        padding-top: 0.5em;
 	padding-right: 20px;
 	color: #5d5d5d;
 	border: none;
