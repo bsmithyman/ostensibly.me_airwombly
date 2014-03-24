@@ -106,14 +106,14 @@ html, body {
         padding: 10px 18px 10px; 18px;
 	background-color: #ffffff;
 	border-left: 1px solid #0969a2;
-	border-right: 1px solid orange;
+	border-right: 1px solid #3d9ad1;
 	border-bottom: 1px solid #0969a2;
 	padding-bottom: 65px;
 }
 
 #main h1, #main h2, #main h3 {
 	width: 100%;
-	color: #3d9ad1;
+	color: #0969a2;
 }
 
 #main h1 {
@@ -197,7 +197,7 @@ html, body {
 	display: block;
 	padding: 0.5em;
 	margin: 0.5em 0;
-	border: 1px solid #3d9ad1;
+	border: 1px solid #0969a2;
 	font-size: medium;
 	text-decoration: none;
 	width: 150px;
@@ -206,7 +206,7 @@ html, body {
 }
 
 #menu-v li:hover {
-	background-color: #3d9ad1;
+	background-color: #0969a2;
 	color: #ffffff;
 }
 
