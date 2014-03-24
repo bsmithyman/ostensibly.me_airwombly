@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="/static/base.css" rel="stylesheet" />
+{% block title %}<title>airwombly</title>{% endblock %}
+{% block extrahead %}{% endblock %}
+<!--[if !IE 7]>
+  <style type="text/css">
+    #wrap {display:table;height:100%}
+  </style>
+<![endif]-->
+</head>
+<body>
+
+<div id="notfootcontainer">
+
+<div id="superheader">
+  <div id="superheaderslim">
+    <span class="popout">
+      <span>Ostensibly Me: </span><a href="http://ostensibly.me">Blog</a>
+    </span> | 
+    <span class="popout">
+      <span>Seismic Laboratory for Imaging and Modeling: </span><a href="https://www.slim.eos.ubc.ca/brendan-smithyman">Academic</a>
+    </span> | 
+    <span class="popout">
+      <span>github.com/bsmithyman: </span><a href="https://github.com/bsmithyman">GitHub</a>
+    </span>
+  </div>
+</div>
+
+<div id="container">
+  <div id="header">
+    <h1>airwombly</h1>
+  </div>
+
+  <div id="main">
+
+    <div id="menu-v">
+      <ul>
+        <a href="{{ url_for('root') }}"><li>index</li></a>
+        {% for page in br.getPages() %}
+        <a href="{{ url_for('page', tag=page) }}"><li>{{ page }}</li></a>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div id="content">
+{% block content %}{% endblock content %}
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="clear"></div>
+<div id="footer">
+  <p>{% block copyright %}All content copyright &copy; 2014 Brendan Smithyman{% endblock %}<br /><br /></p>
+</div>
+
+</body>
+</html>
