@@ -27,7 +27,7 @@ html, body {
 /* header stuff */
 #superheader {
 	background-color: #ffffff;
-	color: #5c3b12;
+	color: #3d9ad1;
 	height: 2em;
 	width: 100%;
 	padding: 0;
@@ -113,7 +113,7 @@ html, body {
 
 #main h1, #main h2, #main h3 {
 	width: 100%;
-	color: #5c3b12;
+	color: #3d9ad1;
 }
 
 #main h1 {
@@ -197,7 +197,7 @@ html, body {
 	display: block;
 	padding: 0.5em;
 	margin: 0.5em 0;
-	border: 1px solid #5c3b12;
+	border: 1px solid #3d9ad1;
 	font-size: medium;
 	text-decoration: none;
 	width: 150px;
@@ -206,7 +206,7 @@ html, body {
 }
 
 #menu-v li:hover {
-	background-color: #5c3b12;
+	background-color: #3d9ad1;
 	color: #ffffff;
 }
 
