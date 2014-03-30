@@ -2,8 +2,6 @@
 title: Consolidating personal network services with Dokku and Docker
 ---
 
-## Introduction
-
 I run a number of network services for our household. These include VPN servers, handlers for web services like Twilio, and a couple of websites. Most of these aren't actually very interesting, but they need to work without a lot of fuss and without a huge investment of capital. File serving happens inside the house, but I found that I needed a number of independent services running outside in order to avoid network anarchy.
 
 Enter [Heroku](https://www.heroku.com/), a stable, managed platform designed to simplify deployment of web services and sites. Heroku is a PaaS (Platform as a Service) designed originally for Ruby apps but supporting a variety of languages and frameworks. Their way of doing things is attractive for a number of reasons:
