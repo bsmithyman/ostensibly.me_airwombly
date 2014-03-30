@@ -4,21 +4,59 @@ title: Consolidating personal network services with Dokku and Docker
 
 I run a number of network services for our household. These include VPN servers, handlers for web services like Twilio, and a couple of websites. Most of these aren't actually very interesting, but they need to work without a lot of fuss and without a huge investment of capital. File serving happens inside the house, but I found that I needed a number of independent services running outside in order to avoid network anarchy.
 
-Enter [Heroku](https://www.heroku.com/), a stable, managed platform designed to simplify deployment of web services and sites. Heroku is a PaaS (Platform as a Service) designed originally for Ruby apps but supporting a variety of languages and frameworks. Their way of doing things is attractive for a number of reasons:
+Enter [Heroku][], a stable, managed platform designed to simplify deployment of web services and sites. Heroku is a PaaS (Platform as a Service) designed originally for Ruby apps but supporting a variety of languages and frameworks. Their way of doing things is attractive for a number of reasons:
 
 - Each independent site/app is isolated in its own environment, with its own resources and dependencies.
-- Deployment is set up in a structured and modular way, using [Git](http://git-scm.com/). Push your content to their site, and it's live, with recursive dependency fetching.
+- Deployment is set up in a structured and modular way, using [Git][]. Push your content to their site and it's live, with recursive dependency fetching.
 - It's straightforward to add cloud-sourced backend services like databases, caching layers, analytics, etc. There's a whole ecosystem, and billing is centralized.
 - There's a very capable free tier that lets you host small projects with no investment (and the same applies for most of the standard add-on services).
 
-The problem with Heroku – if it can be called a problem – is that it's overkill for most personal projects. This makes a lot of sense if you're running a company off of it; however, their pricing is a harder proposition if the consequence of downtime is mild inconvenience. Like, $34.50/mo (USD) for the initial paid tier, as of March 2014. Speaking personally, that's well above my [latte threshold](/glossary), though you definitely get rock-solid performance for the money.
+The problem with Heroku---if it can be called a problem---is that it's overkill for most personal projects. This makes a lot of sense if you're running a company off of it; however, their pricing is a harder proposition if the consequence of downtime is *mild inconvenience*, rather than *business apocalypse*. It's, like, $34.50/mo (USD) for the initial paid tier, as of March 2014. Speaking personally, that's well above my [latte threshold][], though you definitely get rock-solid performance for the money.
 
 On a personal note, I have limited discretionary funds before I have to start justifying such critical tasks as: backing up data three times, running carrier grade VoIP services for our house, insisting on UPS battery backups, making lighting computer controllable, runnning gigabit *everywhere*, etc.
 
-## That'll do, Pig; that'll do
+> That'll do, Pig; that'll do
 
 Let's introduce things recursively:
-[Dokku](https://github.com/progrium/dokku) is a minimal open-source re-implementation of the Heroku Procfile-based PaaS infrastructure ("the smallest PaaS implementation you've ever seen"), which runs on 
-[Docker](https://www.docker.io/), itself a set of services designed to make [LXC Containers](https://linuxcontainers.org/) usable. Docker is billed as "an open source project to pack, ship and run any application as a lightweight container". Docker is useful because it simplifies deployment of lightweight containers that encapsulate the dependencies and functionality of a whole application stack. Dokku makes it straightforward to depoloy things in a Heroku-esque environment running on your own hardware.
 
-So, 
+[Dokku][] is a minimal open-source re-implementation of the Heroku [Buildpack][]-based PaaS infrastructure ("the smallest PaaS implementation you've ever seen"), which runs on 
+[Docker][], itself a set of services designed to make [LXC Containers][] usable. Docker is billed as "an open source project to pack, ship and run any application as a lightweight container". Docker is useful because it simplifies deployment of bundles that encapsulate the dependencies and functionality of a whole application stack.
+
+Dokku makes it straightforward to depoloy things in a Heroku-esque environment running on your own hardware. It's a project by Jeff Lindsay, and you can find out a lot more on [his blog][DokkuBlog]. In the long run, it's looking like the successor, [Flynn][], may turn out to be even cooler and more capable (but it's still under development as I write this).
+
+I run Dokku on [DigitalOcean][], which works fantastically-well for about $5/mo. See tutorials [here][HowToDokkuDO] and [here][DeployingDokkuDO]. Of course, it's quite trivial to install on your own hardware too; just check out the instructions in the [Dokku GitHub repository][Dokku].
+
+For now, I'm going to avoid talking about setup, and just outline features. To set up a new Dokku site, you just add a deployment target in the Git repository for your Buildpack/Procfile-enabled app:
+
+````bash
+git remote add dokku dokku@somekindasite.com:blog.git
+````
+
+When you push (`git push dokku master`), a whole bunch of cool things happen. First off, the push is handled by Git per normal. On the server end, the `dokku` user maintains a Git repository that receives the content. But, there's a receive hook (handled by [gitreceive][]) that checks to see if the target repository exists. If it *doesn't*, Dokku's underlying framework springs into motion and sets up the repository; it also starts putting together a Docker/LXC container to hold the app. Then, whether it was a new app or not, Dokku syncs in the new content and handles the buildpack---this means pulling any dependencies, setting up the app, and launching it as a service.
+
+One really cool feature of Dokku: you can speecify the target domain in the Git remote address. In the example above, `blog` will coerce to a subdomain of whatever wildcard domain is set up for Dokku. See below for some examples (it's assumed that `somekindasite.com` is specified as the default domain for the Dokku installation). This works for arbitrary bare domains as well.
+
+| Git Remote Entry                                    | VirtualHost            |
+|-----------------------------------------------------|------------------------|
+| `dokku@somekindasite.com:blog.git`                  | blog.somekindasite.com |
+| `dokku@somekindasite.com:www.git`                   | www.somekindasite.com  | 
+| `dokku@somekindasite.com:www.somekindasite.com.git` | www.somekindasite.com  |
+| `dokku@somekindasite.com:somekindasite.com.git`     | somekindasite.com      |
+| `dokku@dramatichats.com.git`                        | dramatichats.com       |
+
+Under the hood, this is making use of Docker containers with private networking. Dokku decides what ports to expose, and the connections for each app are reverse proxied using [Nginx][] Server Blocks (cf. VirtualHost entries) that are generated automatically.
+
+[Heroku]: https://www.heroku.com/
+[Git]: http://git-scm.com/
+[latte threshold]: /glossary
+[Dokku]: https://github.com/progrium/dokku
+[Buildpack]: https://devcenter.heroku.com/articles/buildpacks
+[Docker]: https://www.docker.io/
+[LXC Containers]: https://linuxcontainers.org/
+[DokkuBlog]: http://progrium.com/blog/2013/06/19/dokku-the-smallest-paas-implementation-youve-ever-seen/
+[Flynn]: https://flynn.io/
+[DigitalOcean]: https://www.digitalocean.com/
+[HowToDokkuDO]: https://www.digitalocean.com/community/articles/how-to-use-the-digitalocean-dokku-application
+[DeployingDokkuDO]: https://www.andrewmunsell.com/blog/dokku-tutorial-digital-ocean
+[gitreceive]: https://github.com/progrium/gitreceive
+[Nginx]: http://wiki.nginx.org/
