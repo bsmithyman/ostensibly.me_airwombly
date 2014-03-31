@@ -12,7 +12,7 @@ Our wifi router (an Asus model) had its domain name set to the same (i.e., `subd
 
 Some of you who have experience with DNS and DHCP will probably start to guess what's going on here. I recently enabled DNS wildcards on the domain, in order to do some work with [Dokku](https://github.com/progrium/dokku) (post on that forthcoming). This means that every subdomain under `*.thedomain.com` gets automatically directed to `198.51.100.82`. Cool. But when the DHCP server for our house is pushing out `resolv.conf` entries containing that search directive, everything gets a bit ~~pear shaped~~ interesting.
 
-In this circumstances, *any* non-existant hostname or subdomain requested from withing my house resolves to `198.51.100.82`. *Any*.
+In this circumstances, *any* non-existant hostname or subdomain requested from within my house resolves to `198.51.100.82`. *Any*.
 
 | Test Case                   | Result          |
 |-----------------------------|-----------------|
